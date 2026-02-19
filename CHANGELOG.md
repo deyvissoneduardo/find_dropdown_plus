@@ -1,4 +1,9 @@
 # [1.0.2] - 2026.02.19
+## FindDropdownThemeData para personalização de tema
+- Nova classe `FindDropdownThemeData` para customizar cores e estilos
+- Propriedades: `dropdownBackgroundColor`, `dropdownBorderColor`, `iconColor`, `selectedItemStyle`, `validationErrorColor`, `validationMessageStyle`, `fontFamily`
+- Parâmetro `theme` opcional em `FindDropdown` e `FindDropdown.multiSelect`
+- Retrocompatível: todas as propriedades são opcionais
 ## Migração para Flutter 3.41.x e Dart 3.x
 - `pubspec.yaml`: constraint de SDK atualizado de `>=2.12.0 <3.0.0` para `>=3.0.0 <4.0.0`
 - `select_dialog` atualizado de `^2.0.1` para `^2.0.2`

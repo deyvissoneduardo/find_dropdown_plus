@@ -134,6 +134,28 @@ Column(
 
 ### [MAIS EXEMPLOS](https://github.com/davidsdearaujo/find_dropdown/tree/master/example)
 
+## Personalização de tema
+É possível customizar cores e tipografia com `FindDropdownThemeData`:
+
+```dart
+FindDropdown<String>(
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+  label: "País",
+  onChanged: (item) => log('$item'),
+  selectedItem: "Brasil",
+  theme: FindDropdownThemeData(
+    dropdownBackgroundColor: Colors.grey.shade100,
+    dropdownBorderColor: Colors.blue,
+    iconColor: Colors.blueGrey,
+    validationErrorColor: Colors.orange,
+    fontFamily: 'Roboto',
+    selectedItemStyle: TextStyle(fontSize: 16, color: Colors.black87),
+  ),
+);
+```
+
+Propriedades: `dropdownBackgroundColor`, `dropdownBorderColor`, `iconColor`, `selectedItemStyle`, `validationErrorColor`, `validationMessageStyle`, `fontFamily`. Todas são opcionais; quando omitidas, os valores padrão são usados.
+
 ## Customização de layout
 É possível customizar o layout do FindDropdown e de seus itens. [EXEMPLO](https://github.com/davidsdearaujo/find_dropdown/tree/master/example#custom-layout-endpoint-example)
 

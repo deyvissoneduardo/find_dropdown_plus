@@ -52,6 +52,16 @@ class _MyHomePageState extends State<MyHomePage> {
               labelStyle: const TextStyle(color: Colors.blue),
               backgroundColor: Colors.redAccent,
               titleStyle: const TextStyle(color: Colors.greenAccent),
+              theme: FindDropdownThemeData(
+                dropdownBackgroundColor: Colors.grey.shade50,
+                dropdownBorderColor: Colors.blue.shade300,
+                iconColor: Colors.blueGrey,
+                validationErrorColor: Colors.orange,
+                selectedItemStyle: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
               validate: (String? item) {
                 if (item == null) return 'Required field';
                 if (item == 'Brasil') return 'Invalid item';

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:select_dialog/select_dialog.dart';
 
 import 'find_dropdown_bloc.dart';
+import 'find_dropdown_theme.dart';
 import 'validation_message_widget.dart';
+
+export 'find_dropdown_theme.dart';
 
 typedef FindDropdownFindType<T> = Future<List<T>> Function(String text);
 typedef FindDropdownChangedType<T> = void Function(T? selectedItem);
@@ -66,6 +69,10 @@ class FindDropdown<T> extends StatefulWidget {
   ///|![image](https://user-images.githubusercontent.com/16373553/80189438-0a020480-85e9-11ea-8e63-3fabfa42c1c7.png)|![image](https://user-images.githubusercontent.com/16373553/80190562-e2ac3700-85ea-11ea-82ef-3383ae32ab02.png)|
   final BoxConstraints? constraints;
 
+  /// Tema para customização de cores e estilos. Quando não informado, usa os
+  /// valores padrão.
+  final FindDropdownThemeData? theme;
+
   const FindDropdown.multiSelect({
     super.key,
     required FindDropdownMultipleItemsChangedType<T> onChanged,
@@ -91,7 +98,9 @@ class FindDropdown<T> extends StatefulWidget {
     this.searchBoxMinLines,
     this.okButtonBuilder,
     this.labelVisible = true,
-    @Deprecated("Use 'hintText' property from searchBoxDecoration") this.searchHint,
+    this.theme,
+    @Deprecated("Use 'hintText' property from searchBoxDecoration")
+    this.searchHint,
   })  : dropdownMultipleItemsBuilder = dropdownBuilder,
         multipleSelectedItems = selectedItems,
         onMultipleItemsChanged = onChanged,
@@ -126,7 +135,9 @@ class FindDropdown<T> extends StatefulWidget {
     this.searchBoxMinLines,
     this.okButtonBuilder,
     this.labelVisible = true,
-    @Deprecated("Use 'hintText' property from searchBoxDecoration") this.searchHint,
+    this.theme,
+    @Deprecated("Use 'hintText' property from searchBoxDecoration")
+    this.searchHint,
     // ignore: prefer_initializing_formals
   })  : onChanged = onChanged,
         validateMultipleItems = null,
@@ -185,6 +196,25 @@ class FindDropdownState<T> extends State<FindDropdown<T>> {
     return null;
   }
 
+  TextStyle? _effectiveLabelStyle(BuildContext context) {
+    final base = widget.labelStyle ?? Theme.of(context).textTheme.titleMedium;
+    final fontFamily = widget.theme?.fontFamily;
+    if (fontFamily != null && base != null) {
+      return base.copyWith(fontFamily: fontFamily);
+    }
+    return base;
+  }
+
+  TextStyle? _effectiveTitleStyle(BuildContext context) {
+    final base = widget.titleStyle;
+    final fontFamily = widget.theme?.fontFamily;
+    if (fontFamily != null) {
+      return (base ?? Theme.of(context).textTheme.titleMedium)
+          ?.copyWith(fontFamily: fontFamily);
+    }
+    return base;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -194,7 +224,7 @@ class FindDropdownState<T> extends State<FindDropdown<T>> {
         if (widget.label != null && widget.labelVisible)
           Text(
             widget.label!,
-            style: widget.labelStyle ?? Theme.of(context).textTheme.titleMedium,
+            style: _effectiveLabelStyle(context),
           ),
         if (widget.label != null) const SizedBox(height: 5),
         Column(
@@ -228,7 +258,7 @@ class FindDropdownState<T> extends State<FindDropdown<T>> {
                       searchBoxDecoration: _effectiveSearchBoxDecoration,
                       backgroundColor: widget.backgroundColor,
                       // ignore: deprecated_member_use
-                      titleStyle: widget.titleStyle,
+                      titleStyle: _effectiveTitleStyle(context),
                       autofocus: widget.autofocus ?? false,
                       constraints: widget.constraints,
                       emptyBuilder: widget.emptyBuilder,
@@ -251,20 +281,39 @@ class FindDropdownState<T> extends State<FindDropdown<T>> {
                     );
                   },
                   child: widget.dropdownBuilder?.call(context, selectedValue) ??
-                      widget.dropdownMultipleItemsBuilder?.call(context, multipleSelectedValues ?? []) ??
+                      widget.dropdownMultipleItemsBuilder
+                          ?.call(context, multipleSelectedValues ?? []) ??
                       Builder(
                         builder: (context) {
-                          final title = isMultipleItems ? multipleSelectedValues?.join(', ').toString() : snapshot.data?.toString();
-                          final showClearButton = snapshot.data != null && widget.showClearButton;
+                          final title = isMultipleItems
+                              ? multipleSelectedValues?.join(', ').toString()
+                              : snapshot.data?.toString();
+                          final showClearButton =
+                              snapshot.data != null && widget.showClearButton;
+                          final bgColor =
+                              widget.theme?.dropdownBackgroundColor ??
+                                  Colors.white;
+                          final borderColor =
+                              widget.theme?.dropdownBorderColor ??
+                                  Theme.of(context).dividerColor;
+                          final iconColor =
+                              widget.theme?.iconColor ?? Colors.black54;
+                          final selectedStyle =
+                              widget.theme?.selectedItemStyle ??
+                                  (widget.theme?.fontFamily != null
+                                      ? TextStyle(
+                                          fontFamily: widget.theme!.fontFamily,
+                                        )
+                                      : null);
                           return Container(
                             padding: const EdgeInsets.fromLTRB(15, 5, 5, 5),
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: bgColor,
                               borderRadius: BorderRadius.circular(4.0),
                               border: Border.all(
                                 width: 1,
-                                color: Theme.of(context).dividerColor,
+                                color: borderColor,
                               ),
                             ),
                             child: Row(
@@ -274,6 +323,7 @@ class FindDropdownState<T> extends State<FindDropdown<T>> {
                                   child: Text(
                                     title ?? '',
                                     overflow: TextOverflow.ellipsis,
+                                    style: selectedStyle,
                                   ),
                                 ),
                                 Align(
@@ -286,22 +336,22 @@ class FindDropdownState<T> extends State<FindDropdown<T>> {
                                             _bloc.selected$.add(null);
                                             widget.onChanged?.call(null);
                                           },
-                                          child: const Padding(
-                                            padding: EdgeInsets.only(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
                                               right: 0,
                                             ),
                                             child: Icon(
                                               Icons.clear,
                                               size: 25,
-                                              color: Colors.black54,
+                                              color: iconColor,
                                             ),
                                           ),
                                         ),
                                       if (!showClearButton)
-                                        const Icon(
+                                        Icon(
                                           Icons.arrow_drop_down,
                                           size: 25,
-                                          color: Colors.black54,
+                                          color: iconColor,
                                         ),
                                     ],
                                   ),
@@ -314,7 +364,11 @@ class FindDropdownState<T> extends State<FindDropdown<T>> {
                 );
               },
             ),
-            if (widget.validate != null || widget.validateMultipleItems != null) ValidationMessageWidget(bloc: _bloc),
+            if (widget.validate != null || widget.validateMultipleItems != null)
+              ValidationMessageWidget(
+                bloc: _bloc,
+                theme: widget.theme,
+              ),
           ],
         ),
       ],

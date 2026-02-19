@@ -48,6 +48,24 @@ FindDropdown<UserModel>(
 ```
 <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Endpoint.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_2.png?raw=true" width="49.5%"/>
 
+## Theme Customization Example
+```dart
+FindDropdown<String>(
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+  label: "País",
+  onChanged: (item) => log('$item'),
+  selectedItem: "Brasil",
+  theme: FindDropdownThemeData(
+    dropdownBackgroundColor: Colors.grey.shade100,
+    dropdownBorderColor: Colors.blue,
+    iconColor: Colors.blueGrey,
+    validationErrorColor: Colors.orange,
+    fontFamily: 'Roboto',
+    selectedItemStyle: TextStyle(fontSize: 16, color: Colors.black87),
+  ),
+);
+```
+
 ## Custom Layout Endpoint Example
 ```dart
 FindDropdown<UserModel>(
