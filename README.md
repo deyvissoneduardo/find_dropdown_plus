@@ -1,6 +1,6 @@
 [![Buy Me A Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20A%20Coffee-yellow.svg)](https://www.buymeacoffee.com/deivao)
 
-# FindDropdown package - [[ver em português](https://github.com/davidsdearaujo/find_dropdown/blob/master/README-PT.md)]
+# FindDropdown package - [[ver em português](https://github.com/deyvissoneduardo/find_dropdown_plus/blob/master/README-PT.md)]
 
 Simple and robust FindDropdown with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
 
