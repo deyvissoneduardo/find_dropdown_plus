@@ -1,4 +1,4 @@
-import 'package:find_dropdown/rxdart/behavior_subject.dart';
+import 'package:find_dropdown_plus/rxdart/behavior_subject.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

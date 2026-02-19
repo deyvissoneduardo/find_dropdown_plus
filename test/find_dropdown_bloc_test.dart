@@ -1,4 +1,4 @@
-import 'package:find_dropdown/find_dropdown_bloc.dart';
+import 'package:find_dropdown_plus/find_dropdown_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -33,8 +33,7 @@ void main() {
       expect(bloc.textController, isA<TextEditingController>());
     });
 
-    test('validateMessageOut emite mensagem de erro quando valor é null',
-        () async {
+    test('validateMessageOut emite mensagem de erro quando valor é null', () async {
       final bloc = FindDropdownBloc<String>(
         validate: (v) => v == null ? 'Obrigatório' : null,
       );

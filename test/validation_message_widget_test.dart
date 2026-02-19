@@ -1,12 +1,11 @@
-import 'package:find_dropdown/find_dropdown_bloc.dart';
-import 'package:find_dropdown/validation_message_widget.dart';
+import 'package:find_dropdown_plus/find_dropdown_bloc.dart';
+import 'package:find_dropdown_plus/validation_message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ValidationMessageWidget', () {
-    testWidgets('exibe mensagem de erro quando validação falha',
-        (tester) async {
+    testWidgets('exibe mensagem de erro quando validação falha', (tester) async {
       final bloc = FindDropdownBloc<String>(
         validate: (v) => v == null ? 'Campo obrigatório' : null,
       );
@@ -27,8 +26,7 @@ void main() {
       expect(find.text('Campo obrigatório'), findsOneWidget);
     });
 
-    testWidgets('não exibe mensagem em cor vermelha quando validação passa',
-        (tester) async {
+    testWidgets('não exibe mensagem em cor vermelha quando validação passa', (tester) async {
       final bloc = FindDropdownBloc<String>(
         seedValue: 'válido',
         validate: (v) => v == null ? 'Campo obrigatório' : null,

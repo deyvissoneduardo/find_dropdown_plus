@@ -1,4 +1,4 @@
-import 'package:find_dropdown/find_dropdown.dart';
+import 'package:find_dropdown_plus/find_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -128,8 +128,7 @@ void main() {
       expect(find.text('Países'), findsOneWidget);
     });
 
-    testWidgets('exibe múltiplos Chips para itens selecionados',
-        (tester) async {
+    testWidgets('exibe múltiplos Chips para itens selecionados', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

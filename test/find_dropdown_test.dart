@@ -1,4 +1,4 @@
-import 'package:find_dropdown/find_dropdown.dart';
+import 'package:find_dropdown_plus/find_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -56,8 +56,7 @@ void main() {
       expect(find.text('País'), findsNothing);
     });
 
-    testWidgets('exibe mensagem de validação quando valor é nulo',
-        (tester) async {
+    testWidgets('exibe mensagem de validação quando valor é nulo', (tester) async {
       final key = GlobalKey<FindDropdownState<String>>();
 
       await tester.pumpWidget(
@@ -137,10 +136,7 @@ void main() {
         ),
       );
       expect(
-        texts
-            .where((t) =>
-                t.data == 'Brasil' && t.overflow == TextOverflow.ellipsis)
-            .isEmpty,
+        texts.where((t) => t.data == 'Brasil' && t.overflow == TextOverflow.ellipsis).isEmpty,
         isTrue,
       );
     });
@@ -163,8 +159,7 @@ void main() {
       expect(find.text('Países'), findsOneWidget);
     });
 
-    testWidgets('exibe itens selecionados iniciais separados por vírgula',
-        (tester) async {
+    testWidgets('exibe itens selecionados iniciais separados por vírgula', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
