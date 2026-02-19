@@ -53,6 +53,31 @@ FindDropdown<String>.multiSelect(
 );
 ```
 
+## FindDropdownChip (display as Chip)
+
+`FindDropdownChip` shows selected item(s) as Material Design [Chip](https://api.flutter.dev/flutter/material/Chip-class.html) widgets. In multiSelect mode, each chip has a delete button.
+
+```dart
+// Single selection
+FindDropdownChip<String>(
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+  label: "País",
+  selectedItem: "Brasil",
+  onChanged: (String? item) => log('$item'),
+);
+
+// Multiple selection (each chip has onDeleted)
+FindDropdownChip<String>.multiSelect(
+  items: const ["Flutter", "Dart", "Widget", "Material"],
+  label: "Tags",
+  selectedItems: const ["Flutter", "Dart"],
+  showClearButton: true,
+  onChanged: (List<String> items) => log('$items'),
+);
+```
+
+Use `chipBuilder` to customize each chip. Use `FindDropdownChipState` and `GlobalKey` for `clear()` and `setSelectedItem()`.
+
 ## Validation
 ```dart
 FindDropdown<String>(

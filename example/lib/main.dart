@@ -31,6 +31,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final countriesKey = GlobalKey<FindDropdownState<String>>();
   final nameKey = GlobalKey<FindDropdownState<UserModel>>();
+  final chipSingleKey = GlobalKey<FindDropdownChipState<String>>();
+  final chipMultiKey = GlobalKey<FindDropdownChipState<String>>();
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +104,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
                 return response;
               },
+            ),
+            FindDropdownChip<String>(
+              key: chipSingleKey,
+              label: 'País (Chip)',
+              items: const [
+                'Brasil',
+                'Itália',
+                'Estados Unidos',
+                'Canadá',
+              ],
+              selectedItem: 'Itália',
+              onChanged: (item) => log('Chip país: $item'),
+              showSearchBox: false,
+              theme: FindDropdownThemeData(
+                dropdownBackgroundColor: Colors.grey.shade50,
+                iconColor: Colors.blue,
+              ),
+            ),
+            FindDropdownChip<String>.multiSelect(
+              key: chipMultiKey,
+              label: 'Tags (Chip)',
+              items: const ['Flutter', 'Dart', 'Widget', 'Material'],
+              selectedItems: const ['Flutter', 'Dart'],
+              onChanged: (items) => log('Chip tags: $items'),
+              showSearchBox: false,
+              showClearButton: true,
+              theme: FindDropdownThemeData(
+                dropdownBackgroundColor: Colors.grey.shade50,
+                iconColor: Colors.blue,
+              ),
             ),
             FindDropdown<UserModel>(
               key: nameKey,
@@ -182,6 +214,24 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   onPressed: () => nameKey.currentState?.clear(),
                   child: const Text('Limpar Nome'),
+                ),
+                const SizedBox(width: 25),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Theme.of(context).primaryIconTheme.color,
+                  ),
+                  onPressed: () => chipSingleKey.currentState?.clear(),
+                  child: const Text('Limpar Chip'),
+                ),
+                const SizedBox(width: 25),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Theme.of(context).primaryIconTheme.color,
+                  ),
+                  onPressed: () => chipMultiKey.currentState?.clear(),
+                  child: const Text('Limpar Tags'),
                 ),
               ],
             ),

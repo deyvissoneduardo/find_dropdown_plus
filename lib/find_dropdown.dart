@@ -5,6 +5,7 @@ import 'find_dropdown_bloc.dart';
 import 'find_dropdown_theme.dart';
 import 'validation_message_widget.dart';
 
+export 'find_dropdown_chip.dart';
 export 'find_dropdown_theme.dart';
 
 typedef FindDropdownFindType<T> = Future<List<T>> Function(String text);

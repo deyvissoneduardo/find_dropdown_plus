@@ -1,4 +1,11 @@
 # [1.0.2] - 2026.02.19
+## FindDropdownChip — exibição em Chip
+- Novo widget `FindDropdownChip` que exibe item(ns) selecionado(s) como Chip do Material
+- Suporte a single e multiSelect; no multiSelect cada chip tem botão de remoção
+- Parâmetro `chipBuilder` para customizar o Chip
+- `FindDropdownChipState` com `clear()` e `setSelectedItem()`
+- Integração com `FindDropdownThemeData`
+
 ## FindDropdownThemeData para personalização de tema
 - Nova classe `FindDropdownThemeData` para customizar cores e estilos
 - Propriedades: `dropdownBackgroundColor`, `dropdownBorderColor`, `iconColor`, `selectedItemStyle`, `validationErrorColor`, `validationMessageStyle`, `fontFamily`
