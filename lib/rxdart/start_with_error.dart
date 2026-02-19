@@ -29,7 +29,7 @@ class _StartWithErrorStreamSink<S> implements ForwardingSink<S, S> {
   }
 
   @override
-  FutureOr onCancel(EventSink<S> sink) {}
+  FutureOr<void> onCancel(EventSink<S> sink) {}
 
   @override
   void onListen(EventSink<S> sink) {

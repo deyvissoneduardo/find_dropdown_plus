@@ -8,14 +8,21 @@ Simples e robusto FindDropdown com recurso de busca entre os itens, possibilitan
 
 <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
 
-## ATENÇÃO
-Se você utiliza o rxdart em seu projeto em uma versão inferior a 0.23.x, utilize a versão `0.1.7+1` desse package.
-Caso contrário, pode utilizar a versão mais atual!
+## Versões
+**Flutter 3.41.x / Dart 3.x**: 1.0.2 ou superior
 
-## packages.yaml
+**Null Safety (Dart 2.x)**: 1.0.0 – 1.0.1
+
+**Sem Null Safety**: 0.2.3 ou inferior
+
+**RxDart 0.23.x ou inferior**: 0.1.7+1
+
+## pubspec.yaml
 ```yaml
-find_dropdown: <lastest version>
+find_dropdown: ^1.0.2
 ```
+
+> Requer `sdk: ">=3.0.0 <4.0.0"` e Flutter 3.41.x+.
 
 ## Import
 ```dart
@@ -24,10 +31,10 @@ import 'package:find_dropdown/find_dropdown.dart';
 
 ## Implementação simples
 ```dart
-FindDropdown(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+FindDropdown<String>(
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
   label: "País",
-  onChanged: (String item) => print(item),
+  onChanged: (String? item) => log('$item'),
   selectedItem: "Brasil",
 );
 ```
@@ -35,27 +42,24 @@ FindDropdown(
 ## Múltiplos itens selecionáveis
 ```dart
 FindDropdown<String>.multiSelect(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
   label: "País",
-  onChanged: (List<String> items) => print(items),
-  selectedItems: ["Brasil"],
+  onChanged: (List<String> items) => log('$items'),
+  selectedItems: const ["Brasil"],
 );
 ```
 
 ## Validação
 ```dart
-FindDropdown(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+FindDropdown<String>(
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
   label: "País",
-  onChanged: (String item) => print(item),
+  onChanged: (String? item) => log('$item'),
   selectedItem: "Brasil",
-  validate: (String item) {
-    if (item == null)
-      return "Campo obrigatório";
-    else if (item == "Brasil")
-      return "Item inválido";
-    else
-      return null; //retorno null para "sem erro"
+  validate: (String? item) {
+    if (item == null) return "Campo obrigatório";
+    if (item == "Brasil") return "Item inválido";
+    return null; // null significa sem erro
   },
 );
 ```
@@ -65,38 +69,33 @@ FindDropdown(
 FindDropdown<UserModel>(
   label: "Nome",
   onFind: (String filter) async {
-    var response = await Dio().get(
-        "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
-        queryParameters: {"filter": filter},
+    final response = await Dio().get<List<dynamic>>(
+      "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
+      queryParameters: {"filter": filter},
     );
-    var models = UserModel.fromJsonList(response.data);
-    return models;
+    return UserModel.fromJsonList(response.data ?? []);
   },
-  onChanged: (UserModel data) {
-    print(data);
-  },
+  onChanged: (UserModel? data) => log('$data'),
 );
 ```
 
 ## Limpar os itens selecionados
 ```dart
-var countriesKey = GlobalKey<FindDropdownState>();
+final countriesKey = GlobalKey<FindDropdownState<String>>();
 
 Column(
   children: [
     FindDropdown<String>(
       key: countriesKey,
-      items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+      items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
       label: "País",
       selectedItem: "Brasil",
       showSearchBox: false,
-      onChanged: (selectedItem) => print("country: $selectedItem"),
+      onChanged: (selectedItem) => log("country: $selectedItem"),
     ),
-    RaisedButton(
-      child: Text('Limpar Países'),
-      color: Theme.of(context).primaryColor,
-      textColor: Theme.of(context).primaryIconTheme.color,
+    ElevatedButton(
       onPressed: () => countriesKey.currentState?.clear(),
+      child: const Text('Limpar Países'),
     ),
   ],
 )
@@ -104,29 +103,29 @@ Column(
 
 ## Alterar os itens selecionados
 ```dart
-var countriesKey = GlobalKey<FindDropdownState>();
+final countriesKey = GlobalKey<FindDropdownState<String>>();
 
 Column(
   children: [
     FindDropdown<UserModel>(
       label: "Nome",
       onFind: (String filter) => getData(filter),
-      searchBoxDecoration: InputDecoration(
+      searchBoxDecoration: const InputDecoration(
         hintText: "Search",
         border: OutlineInputBorder(),
       ),
-      onChanged: (UserModel data) {
-        print(data);
-        countriesKey.currentState.setSelectedItem(null);
+      onChanged: (UserModel? data) {
+        log('$data');
+        countriesKey.currentState?.setSelectedItem("Brasil");
       },
     ),
     FindDropdown<String>(
       key: countriesKey,
-      items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+      items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
       label: "País",
       selectedItem: "Brasil",
       showSearchBox: false,
-      onChanged: (selectedItem) => print("country: $selectedItem"),
+      onChanged: (selectedItem) => log("country: $selectedItem"),
     ),
   ],
 )
@@ -153,20 +152,24 @@ Para usar um modelo como item no dropdown, é necessário implementar os método
 ```dart
 class UserModel {
   final String id;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final String name;
   final String avatar;
 
-  UserModel({this.id, this.createdAt, this.name, this.avatar});
+  UserModel({
+    required this.id,
+    required this.createdAt,
+    required this.name,
+    required this.avatar,
+  });
 
   @override
   String toString() => name;
 
   @override
-  operator ==(o) => o is UserModel && o.id == id;
+  bool operator ==(Object other) => other is UserModel && other.id == id;
 
   @override
-  int get hashCode => id.hashCode^name.hashCode^createdAt.hashCode;
-
+  int get hashCode => id.hashCode ^ name.hashCode ^ createdAt.hashCode;
 }
 ```

@@ -10,9 +10,6 @@ import 'subject.dart';
 /// which can be used in pair with a [ForwardingSink]
 Stream<R> forwardStream<T, R>(
     Stream<T> stream, ForwardingSink<T, R> connectedSink) {
-  ArgumentError.checkNotNull(stream, 'stream');
-  ArgumentError.checkNotNull(connectedSink, 'connectedSink');
-
   late StreamController<R> controller;
   late StreamSubscription<T> subscription;
 
@@ -24,7 +21,7 @@ Stream<R> forwardStream<T, R>(
     }
   }
 
-  final onListen = () {
+  void onListen() {
     runCatching(() => connectedSink.onListen(controller));
 
     subscription = stream.listen(
@@ -33,27 +30,27 @@ Stream<R> forwardStream<T, R>(
           runCatching(() => connectedSink.addError(controller, e, st)),
       onDone: () => runCatching(() => connectedSink.close(controller)),
     );
-  };
+  }
 
-  final onCancel = () {
+  Future<void> onCancel() {
     final onCancelSelfFuture = subscription.cancel();
     final onCancelConnectedFuture = connectedSink.onCancel(controller);
-    final futures = <Future>[
-      if (onCancelSelfFuture is Future) onCancelSelfFuture,
-      if (onCancelConnectedFuture is Future) onCancelConnectedFuture,
+    final futures = <Future<void>>[
+      onCancelSelfFuture,
+      if (onCancelConnectedFuture is Future<void>) onCancelConnectedFuture,
     ];
-    return Future.wait<dynamic>(futures);
-  };
+    return Future.wait<void>(futures);
+  }
 
-  final onPause = () {
+  void onPause() {
     subscription.pause();
     runCatching(() => connectedSink.onPause(controller));
-  };
+  }
 
-  final onResume = () {
+  void onResume() {
     subscription.resume();
     runCatching(() => connectedSink.onResume(controller));
-  };
+  }
 
   // Create a new Controller, which will serve as a trampoline for
   // forwarded events.

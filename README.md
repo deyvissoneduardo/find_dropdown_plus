@@ -11,20 +11,21 @@ Simple and robust FindDropdown with item search feature, making it possible to u
 
 
 
-## ATTENTION
-If you use rxdart in your project in a version lower than 0.23.x, use version `0.1.7+1` of this package. Otherwise, you can use the most current version!
-
 ## Versions
-**Null Safety Version**: 1.0.0 or more
+**Flutter 3.41.x / Dart 3.x**: 1.0.2 or more
 
-**Non Null Safety Version**: 0.2.3 or less
+**Null Safety (Dart 2.x)**: 1.0.0 – 1.0.1
+
+**Non Null Safety**: 0.2.3 or less
 
 **RxDart 0.23.x or less**: 0.1.7+1
 
-## packages.yaml
+## pubspec.yaml
 ```yaml
-find_dropdown: <lastest version>
+find_dropdown: ^1.0.2
 ```
+
+> Requires `sdk: ">=3.0.0 <4.0.0"` and Flutter 3.41.x+.
 
 ## Import
 ```dart
@@ -34,10 +35,10 @@ import 'package:find_dropdown/find_dropdown.dart';
 ## Simple implementation
 
 ```dart
-FindDropdown(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+FindDropdown<String>(
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
   label: "País",
-  onChanged: (String item) => print(item),
+  onChanged: (String? item) => log('$item'),
   selectedItem: "Brasil",
 );
 ```
@@ -45,27 +46,24 @@ FindDropdown(
 ## Multiple selectable items
 ```dart
 FindDropdown<String>.multiSelect(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
   label: "País",
-  onChanged: (List<String> items) => print(items),
-  selectedItems: ["Brasil"],
+  onChanged: (List<String> items) => log('$items'),
+  selectedItems: const ["Brasil"],
 );
 ```
 
 ## Validation
 ```dart
-FindDropdown(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+FindDropdown<String>(
+  items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
   label: "País",
-  onChanged: (String item) => print(item),
+  onChanged: (String? item) => log('$item'),
   selectedItem: "Brasil",
-  validate: (String item) {
-    if (item == null)
-      return "Required field";
-    else if (item == "Brasil")
-      return "Invalid item";
-    else
-      return null; //return null to "no error"
+  validate: (String? item) {
+    if (item == null) return "Required field";
+    if (item == "Brasil") return "Invalid item";
+    return null; // null means no error
   },
 );
 ```
@@ -76,38 +74,33 @@ FindDropdown(
 FindDropdown<UserModel>(
   label: "Nome",
   onFind: (String filter) async {
-    var response = await Dio().get(
-        "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
-        queryParameters: {"filter": filter},
+    final response = await Dio().get<List<dynamic>>(
+      "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
+      queryParameters: {"filter": filter},
     );
-    var models = UserModel.fromJsonList(response.data);
-    return models;
+    return UserModel.fromJsonList(response.data ?? []);
   },
-  onChanged: (UserModel data) {
-    print(data);
-  },
+  onChanged: (UserModel? data) => log('$data'),
 );
 ```
 
 ## Clear selected items
 ```dart
-var countriesKey = GlobalKey<FindDropdownState>();
+final countriesKey = GlobalKey<FindDropdownState<String>>();
 
 Column(
   children: [
     FindDropdown<String>(
       key: countriesKey,
-      items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+      items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
       label: "País",
       selectedItem: "Brasil",
       showSearchBox: false,
-      onChanged: (selectedItem) => print("country: $selectedItem"),
+      onChanged: (selectedItem) => log("country: $selectedItem"),
     ),
-    RaisedButton(
-      child: Text('Limpar Países'),
-      color: Theme.of(context).primaryColor,
-      textColor: Theme.of(context).primaryIconTheme.color,
+    ElevatedButton(
       onPressed: () => countriesKey.currentState?.clear(),
+      child: const Text('Limpar Países'),
     ),
   ],
 )
@@ -115,29 +108,29 @@ Column(
 
 ## Change selected items
 ```dart
-var countriesKey = GlobalKey<FindDropdownState>();
+final countriesKey = GlobalKey<FindDropdownState<String>>();
 
 Column(
   children: [
     FindDropdown<UserModel>(
       label: "Nome",
       onFind: (String filter) => getData(filter),
-      searchBoxDecoration: InputDecoration(
+      searchBoxDecoration: const InputDecoration(
         hintText: "Search",
         border: OutlineInputBorder(),
       ),
-      onChanged: (UserModel data) {
-        print(data);
-        countriesKey.currentState.setSelectedItem("Brasil");
+      onChanged: (UserModel? data) {
+        log('$data');
+        countriesKey.currentState?.setSelectedItem("Brasil");
       },
     ),
     FindDropdown<String>(
       key: countriesKey,
-      items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+      items: const ["Brasil", "Itália", "Estados Unidos", "Canadá"],
       label: "País",
       selectedItem: "Brasil",
       showSearchBox: false,
-      onChanged: (selectedItem) => print("country: $selectedItem"),
+      onChanged: (selectedItem) => log("country: $selectedItem"),
     ),
   ],
 )
@@ -163,20 +156,24 @@ To use a template as an item type, you need to implement **toString**, **equals*
 ```dart
 class UserModel {
   final String id;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final String name;
   final String avatar;
 
-  UserModel({this.id, this.createdAt, this.name, this.avatar});
+  UserModel({
+    required this.id,
+    required this.createdAt,
+    required this.name,
+    required this.avatar,
+  });
 
   @override
   String toString() => name;
 
   @override
-  operator ==(o) => o is UserModel && o.id == id;
+  bool operator ==(Object other) => other is UserModel && other.id == id;
 
   @override
-  int get hashCode => id.hashCode^name.hashCode^createdAt.hashCode;
-
+  int get hashCode => id.hashCode ^ name.hashCode ^ createdAt.hashCode;
 }
 ```

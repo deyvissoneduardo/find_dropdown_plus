@@ -1,3 +1,16 @@
+# [1.0.2] - 2026.02.19
+## Migração para Flutter 3.41.x e Dart 3.x
+- `pubspec.yaml`: constraint de SDK atualizado de `>=2.12.0 <3.0.0` para `>=3.0.0 <4.0.0`
+- `select_dialog` atualizado de `^2.0.1` para `^2.0.2`
+- Adicionado `flutter_lints` e `analysis_options.yaml` com strict-casts, strict-inference, strict-raw-types
+- Typedefs migrados para a sintaxe moderna (`typedef Foo = ...`)
+- `ArgumentError.checkNotNull` (depreciado) removido de `forwarding_stream.dart`
+- `void dispose() async` corrigido para `Future<void> dispose()` no `FindDropdownBloc`
+- `RaisedButton` substituído por `ElevatedButton` no exemplo
+- `FloatingActionButton(mini: true)` substituído por `FloatingActionButton.small()` no exemplo
+- `print()` substituído por `log()` de `dart:developer` no exemplo
+- Criados testes unitários e de widget em `test/`
+
 # [1.0.1] - 2021.06.26
 ## Added clear selected items function
 ## Closed issues
